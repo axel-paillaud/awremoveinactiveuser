@@ -1,0 +1,26 @@
+{
+  "name": "axelweb/awmodulebase",
+  "description": "PrestaShop module base template for development",
+  "type": "prestashop-module",
+  "license": "AFL-3.0",
+  "authors": [
+    {
+      "name": "Axelweb",
+      "email": "contact@axelweb.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Axelweb\\AwModuleBase\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.1"
+  },
+  "config": {
+    "prepend-autoloader": false
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.89"
+  }
+}
