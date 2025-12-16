@@ -50,19 +50,27 @@ class GetInactiveUsersEmailsCommand extends Command
 
     protected function configure(): void
     {
+        $defaultDir = _PS_ROOT_DIR_ . '/var/modules/awremoveinactiveuser';
+        $defaultName = 'inactive_users_emails.csv';
+
         $this
             ->setDescription('Get emails of inactive customers.')
             ->addOption('days', 'd', InputOption::VALUE_REQUIRED, 'Number of days of inactivity', 365)
             ->addOption('shop', 's', InputOption::VALUE_REQUIRED, 'Shop ID (default: all shops)')
             ->addOption('batch', 'b', InputOption::VALUE_REQUIRED, 'Batch size for memory optimization', 1000)
-            ->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output file path (CSV format)')
-            ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Output format: csv|json|txt', 'txt')
+            ->addOption('out-dir', null, InputOption::VALUE_REQUIRED, 'Output directory', $defaultDir)
+            ->addOption('out-name', null, InputOption::VALUE_REQUIRED, 'Output filename (e.g. emails.csv)', $defaultName)
+            ->addOption('format', 'f', InputOption::VALUE_REQUIRED, 'Output format: csv|json|txt', 'csv')
+            ->addOption('display', null, InputOption::VALUE_NONE, 'Display emails in console instead of saving to file')
             ->setHelp(
                 'This command retrieves emails of customers who have been inactive for X days.' . PHP_EOL .
+                'By default, emails are saved to var/modules/awremoveinactiveuser/' . PHP_EOL .
+                PHP_EOL .
                 'Examples:' . PHP_EOL .
                 '  php bin/console awremoveinactiveuser:get-emails --days=365' . PHP_EOL .
                 '  php bin/console awremoveinactiveuser:get-emails --days=730 --shop=1' . PHP_EOL .
-                '  php bin/console awremoveinactiveuser:get-emails --days=365 --output=/tmp/emails.csv --format=csv'
+                '  php bin/console awremoveinactiveuser:get-emails --days=365 --out-name=my_emails.csv' . PHP_EOL .
+                '  php bin/console awremoveinactiveuser:get-emails --days=365 --display'
             );
     }
 
