@@ -128,9 +128,36 @@ class RemoveInactiveUsersCommand extends Command
                 }
             }
 
-            // Delete users
+            // Delete users with progress reporting
             $output->writeln('<info>Processing deletion...</info>');
-            $result = $this->service->deleteInactiveUsers($days, $shopId, $batchSize, $dryRun);
+            
+            $lastPercent = -1;
+            $startTime = time();
+            
+            $progressCallback = function ($current, $total, $email) use ($output, &$lastPercent, $startTime) {
+                $percent = floor(($current / $total) * 100);
+                
+                // Display progress every 5% or every 100 users
+                if ($percent !== $lastPercent && ($percent % 5 === 0 || $current % 100 === 0)) {
+                    $elapsed = time() - $startTime;
+                    $estimatedTotal = ($current > 0) ? ($elapsed / $current) * $total : 0;
+                    $remaining = max(0, $estimatedTotal - $elapsed);
+                    
+                    $output->writeln(sprintf(
+                        '<comment>[%d%%] %d/%d processed | Elapsed: %s | Remaining: ~%s | Current: %s</comment>',
+                        $percent,
+                        $current,
+                        $total,
+                        $this->formatTime($elapsed),
+                        $this->formatTime($remaining),
+                        substr($email, 0, 30)
+                    ));
+                    
+                    $lastPercent = $percent;
+                }
+            };
+            
+            $result = $this->service->deleteInactiveUsers($days, $shopId, $batchSize, $dryRun, $progressCallback);
 
             // Display results
             if ($dryRun) {
@@ -158,6 +185,32 @@ class RemoveInactiveUsersCommand extends Command
 
             return $this->exitFailure();
         }
+    }
+
+    /**
+     * Format time in seconds to human readable format
+     *
+     * @param int $seconds
+     *
+     * @return string
+     */
+    private function formatTime(int $seconds): string
+    {
+        if ($seconds < 60) {
+            return $seconds . 's';
+        }
+
+        $minutes = floor($seconds / 60);
+        $seconds = $seconds % 60;
+
+        if ($minutes < 60) {
+            return sprintf('%dm %ds', $minutes, $seconds);
+        }
+
+        $hours = floor($minutes / 60);
+        $minutes = $minutes % 60;
+
+        return sprintf('%dh %dm', $hours, $minutes);
     }
 
     /**

@@ -35,7 +35,7 @@ class AwRemoveInactiveUser extends Module
     {
         $this->name = 'awremoveinactiveuser';
         $this->tab = 'administration';
-        $this->version = '1.0.0';
+        $this->version = '1.1.0';
         $this->author = 'Axelweb';
         $this->need_instance = 0;
 

@@ -76,6 +76,7 @@ class InactiveUserService
      * @param int|null $shopId Shop ID (null for all shops)
      * @param int $batchSize Batch size to optimize memory usage
      * @param bool $dryRun If true, only simulate deletion without actually deleting
+     * @param callable|null $progressCallback Callback to report progress (receives: current, total, customerEmail)
      *
      * @return array ['deleted' => int, 'errors' => array, 'skipped' => int]
      */
@@ -83,22 +84,32 @@ class InactiveUserService
         int $inactiveDays,
         ?int $shopId = null,
         int $batchSize = 100,
-        bool $dryRun = false
+        bool $dryRun = false,
+        ?callable $progressCallback = null
     ): array {
         $deleted = 0;
         $skipped = 0;
         $errors = [];
         $offset = 0;
+        $processed = 0;
+        $totalCount = $this->repository->countInactiveUsers($inactiveDays, $shopId);
 
         do {
             $batch = $this->repository->fetchInactiveUsersBatch($inactiveDays, $shopId, $batchSize, $offset);
 
             foreach ($batch as $row) {
+                $processed++;
+
                 try {
                     $customer = new Customer((int) $row['id_customer']);
 
                     if (!$customer->id) {
                         continue;
+                    }
+
+                    // Report progress
+                    if ($progressCallback) {
+                        $progressCallback($processed, $totalCount, $customer->email);
                     }
 
                     // Check if customer has orders
