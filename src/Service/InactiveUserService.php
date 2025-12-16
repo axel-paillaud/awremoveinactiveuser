@@ -134,9 +134,12 @@ class InactiveUserService
                 }
             }
 
-            // No need to increment offset because we're deleting rows
-            // We refetch from the beginning until there are no more results
-        } while (count($batch) > 0 && !$dryRun);
+            // In dry-run mode, increment offset to continue through all users
+            // In real mode, no need to increment because we're deleting rows
+            if ($dryRun) {
+                $offset += $batchSize;
+            }
+        } while (count($batch) === $batchSize);
 
         return [
             'deleted' => $deleted,
