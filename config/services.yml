@@ -1,0 +1,28 @@
+services:
+  _defaults:
+    public: true
+
+  # Repository
+  Axelweb\AwRemoveInactiveUser\Repository\InactiveUserRepository:
+    class: Axelweb\AwRemoveInactiveUser\Repository\InactiveUserRepository
+
+  # Service
+  Axelweb\AwRemoveInactiveUser\Service\InactiveUserService:
+    class: Axelweb\AwRemoveInactiveUser\Service\InactiveUserService
+    arguments:
+      - '@Axelweb\AwRemoveInactiveUser\Repository\InactiveUserRepository'
+
+  # Commands
+  Axelweb\AwRemoveInactiveUser\Command\GetInactiveUsersEmailsCommand:
+    class: Axelweb\AwRemoveInactiveUser\Command\GetInactiveUsersEmailsCommand
+    arguments:
+      - '@Axelweb\AwRemoveInactiveUser\Service\InactiveUserService'
+    tags:
+      - { name: 'console.command' }
+
+  Axelweb\AwRemoveInactiveUser\Command\RemoveInactiveUsersCommand:
+    class: Axelweb\AwRemoveInactiveUser\Command\RemoveInactiveUsersCommand
+    arguments:
+      - '@Axelweb\AwRemoveInactiveUser\Service\InactiveUserService'
+    tags:
+      - { name: 'console.command' }
