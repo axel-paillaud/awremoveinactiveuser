@@ -50,19 +50,11 @@ class InactiveUserRepository
         $dateLimit = date('Y-m-d H:i:s', strtotime("-{$inactiveDays} days"));
 
         $query = new DbQuery();
-        $query->select('c.id_customer, c.email, c.firstname, c.lastname, c.date_add');
+        $query->select('c.id_customer, c.email, c.firstname, c.lastname, c.date_add, c.date_upd');
         $query->from('customer', 'c');
-        $query->where('c.date_add < "' . pSQL($dateLimit) . '"');
+        $query->where('c.date_upd < "' . pSQL($dateLimit) . '"');
         $query->where('c.deleted = 0');
         $query->where('c.is_guest = 0');
-
-        // Exclude customers with recent connections
-        $query->where('NOT EXISTS (
-            SELECT 1 
-            FROM ' . _DB_PREFIX_ . 'connections con 
-            WHERE con.id_customer = c.id_customer 
-            AND con.date_add >= "' . pSQL($dateLimit) . '"
-        )');
 
         // Exclude customers with recent orders
         $query->where('NOT EXISTS (
@@ -98,17 +90,9 @@ class InactiveUserRepository
         $query = new DbQuery();
         $query->select('COUNT(DISTINCT c.id_customer)');
         $query->from('customer', 'c');
-        $query->where('c.date_add < "' . pSQL($dateLimit) . '"');
+        $query->where('c.date_upd < "' . pSQL($dateLimit) . '"');
         $query->where('c.deleted = 0');
         $query->where('c.is_guest = 0');
-
-        // Exclude customers with recent connections
-        $query->where('NOT EXISTS (
-            SELECT 1 
-            FROM ' . _DB_PREFIX_ . 'connections con 
-            WHERE con.id_customer = c.id_customer 
-            AND con.date_add >= "' . pSQL($dateLimit) . '"
-        )');
 
         // Exclude customers with recent orders
         $query->where('NOT EXISTS (
