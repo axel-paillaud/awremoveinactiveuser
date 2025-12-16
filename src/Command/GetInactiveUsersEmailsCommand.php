@@ -80,8 +80,10 @@ class GetInactiveUsersEmailsCommand extends Command
             $days = (int) $input->getOption('days');
             $shopId = $input->getOption('shop') ? (int) $input->getOption('shop') : null;
             $batchSize = (int) $input->getOption('batch');
-            $outputFile = $input->getOption('output');
+            $outDir = (string) $input->getOption('out-dir');
+            $outName = (string) $input->getOption('out-name');
             $format = (string) $input->getOption('format');
+            $displayOnly = (bool) $input->getOption('display');
 
             // Validate days
             if ($days < 1) {
@@ -106,11 +108,12 @@ class GetInactiveUsersEmailsCommand extends Command
             $emails = $this->service->getInactiveUsersEmails($days, $shopId, $batchSize);
 
             // Output
-            if ($outputFile) {
+            if ($displayOnly) {
+                $this->displayEmails($emails, $output, $format);
+            } else {
+                $outputFile = rtrim($outDir, '/') . '/' . $outName;
                 $this->writeToFile($emails, $outputFile, $format);
                 $output->writeln(sprintf('<info>Emails exported to: %s</info>', $outputFile));
-            } else {
-                $this->displayEmails($emails, $output, $format);
             }
 
             $output->writeln(sprintf('<info>Total: %d emails</info>', count($emails)));
