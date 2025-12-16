@@ -1,6 +1,6 @@
 {
-  "name": "axelweb/awmodulebase",
-  "description": "PrestaShop module base template for development",
+  "name": "axelweb/awremoveinactiveuser",
+  "description": "PrestaShop CLI module for deleting inactive customers to comply with GDPR.",
   "type": "prestashop-module",
   "license": "AFL-3.0",
   "authors": [
@@ -11,11 +11,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "Axelweb\\AwModuleBase\\": "src/"
+      "Axelweb\\AwRemoveInactiveUser\\": "src/"
     }
   },
   "require": {
-    "php": ">=7.1"
+    "php": ">=7.4"
   },
   "config": {
     "prepend-autoloader": false
