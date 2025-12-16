@@ -1,0 +1,6 @@
+.git
+bin
+.php-cs-fixer.php
+.php-cs-fixer.dist.php
+.php_cs.cache
+tests
