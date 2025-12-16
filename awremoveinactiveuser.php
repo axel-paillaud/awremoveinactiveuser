@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2024 PrestaShop
+ * 2007-2025 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    Axelweb <contact@axelweb.fr>
- * @copyright 2007-2024 Axelweb
+ * @copyright 2007-2025 Axelweb
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  *  International Registered Trademark & Property of Axelweb
  */
@@ -29,7 +29,7 @@ if (!defined('_PS_VERSION_')) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-class AwModuleBase extends Module
+class AwRemoveInactiveUser extends Module
 {
     public function __construct()
     {
@@ -44,7 +44,7 @@ class AwModuleBase extends Module
         parent::__construct();
 
         $this->displayName = $this->trans('Remove Inactive User', [], 'Modules.Awremoveinactiveuser.Admin');
-        $this->description = $this->trans('PrestaShop CLI module for deleting inactive customers to comply with GDPR.', [], 'Modules.Awremoveinactiveuser.Admin');
+        $this->description = $this->trans('PrestaShop CLI module for managing inactive customers (list emails and delete) to comply with GDPR.', [], 'Modules.Awremoveinactiveuser.Admin');
 
         $this->confirmUninstall = $this->trans('Are you sure you want to uninstall this module?', [], 'Modules.Awremoveinactiveuser.Admin');
 
